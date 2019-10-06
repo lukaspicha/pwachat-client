@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>PWAChat</title>
 	<link rel="stylesheet" type="text/css" href="sources/bootstrap/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="sources/css/main.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" >
+	<script src="sources/js/jquery-3.4.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+	<script src="sources/js/app.js"></script>
 </head>
 <body>
 <div class="container">
-
     <!-- Page header start -->
     <div class="page-title">
         <div class="row gutters">
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                <h1 class="title appname">PWA chat</h1>
+            	<h1 class="title appname">{{ title }}</h1>	
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-               
             </div>
         </div>
     </div>
@@ -34,72 +36,21 @@
 
                     <!-- Row start -->
                     <div class="row no-gutters">
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3" id="app">
                             <div class="users-container">
                                 <div class="chat-search-box">
-                                   <h4>Connected members</h4>
+                                   <h4>Dostupné chaty ({{ users.length }})</h4>
                                 </div>
                                 <ul class="users">
-                                    <li class="person" data-chat="person1">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
-                                            <span class="status busy"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Steve Bangalter</span>
-                                            <span class="time">15/02/2019</span>
+                                	<li class="person" v-for="user in users" data-chat="person1">
+                                		<div class="user">
+                                			<img :src="user.avatar" alt="{{ user.name }}">
+                                			<span class="status" v-bind:class="[user.status]"></span>
+                                		</div>
+                                		<p class="name-time">
+                                            <span class="name">{{ user.name }}</span>
                                         </p>
-                                    </li>
-                                    <li class="person" data-chat="person1">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar1.png" alt="Retail Admin">
-                                            <span class="status offline"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Steve Bangalter</span>
-                                            <span class="time">15/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person active-user" data-chat="person2">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar2.png" alt="Retail Admin">
-                                            <span class="status away"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Peter Gregor</span>
-                                            <span class="time">12/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person" data-chat="person3">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
-                                            <span class="status busy"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Jessica Larson</span>
-                                            <span class="time">11/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person" data-chat="person4">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar4.png" alt="Retail Admin">
-                                            <span class="status offline"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Lisa Guerrero</span>
-                                            <span class="time">08/02/2019</span>
-                                        </p>
-                                    </li>
-                                    <li class="person" data-chat="person5">
-                                        <div class="user">
-                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar5.png" alt="Retail Admin">
-                                            <span class="status away"></span>
-                                        </div>
-                                        <p class="name-time">
-                                            <span class="name">Michael Jordan</span>
-                                            <span class="time">05/02/2019</span>
-                                        </p>
-                                    </li>
+                                	</li>
                                 </ul>
                             </div>
                         </div>
@@ -189,9 +140,6 @@
     </div>
     <!-- Content wrapper end -->
 
-</div>
-
-	
-	
+</div>	
 </body>
 </html>
