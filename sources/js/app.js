@@ -1,22 +1,22 @@
 $(document).ready(function(){
+	
+	var listOfUsers = [];
+	var url = 'https://private-d70ba-pwachat.apiary-mock.com/v1/users';
+	
+	$.ajax({
+	    url: url,
+	    type: 'get',
+	    async: false,
+	    dataType: "json",
+	    success: function(data) {
+	    	listOfUsers = data;
+	    }
+	});
 
 	var members = new Vue({
 		el: '#app',
 		data: {
-			users: [
-				{
-					id: 1,
-					name: "Pepa Reckziegel",
-					avatar: "https://www.bootdey.com/img/Content/avatar/avatar3.png",
-					status: "online"
-				},
-				{
-					id: 2,
-					name: "Martin Tejkl",
-					avatar: "https://www.bootdey.com/img/Content/avatar/avatar1.png",
-					status: "away"
-				}
-			]
+			users: listOfUsers
 		}
 	});
 
