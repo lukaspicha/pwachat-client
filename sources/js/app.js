@@ -15,7 +15,6 @@
 			},
 			methods: {
 				getAllAvatars(room) {
-					console.log(room);
 					var avatars = [];
 					$.each(room.users, function(index, user) {
 						avatars.push({
@@ -31,12 +30,6 @@
 		loadMyRooms();
 		loadUsers();
 
-
-
-
-
-
-
 		//test
 		var title = new Vue({
 			el: '.appname',
@@ -44,25 +37,33 @@
 				title: 'PWAChat'
 			}
 		});
+
 		var conversation = new Vue({
-				el: "#thread-panel",
-				data: {
-					conversation: null,
-					user_id: null
+			el: "#thread-panel",
+			data: {
+				conversation: null,
+				user_id: null,
+				oposite_id: null
+			},
+			methods: {
+				chatSide(userId) {
+					return userId == 1 ? "chat-left" : "chat-right";
 				},
-				methods: {
-					chatSide(userId) {
-						return userId == 1 ? "chat-left" : "chat-right";
-					},
-					convertDate(date) {
-						d = new Date(date);
-						return d.toLocaleString();
-					}
+				convertDate(date) {
+					d = new Date(date);
+					return d.toLocaleString();
 				}
-			});
+			}
+		});
+
+
+		$(document).on('click','.person',function () {
+                console.log('person.clicked');
+			loadThread($(this).attr('data-chat'));
+        });
 
 		function loadThread(to) {
-			console.log(to);
+			console.log("X");
 			var thread = [
 				{
 					"user": {
@@ -108,19 +109,13 @@
 			conversation.user_id = 1;
 			conversation.conversation = thread;
 			conversation.oposite_id = to;
-
-		}
-
-
-		$(".person").click(function() {
-			loadThread($(this).attr('data-chat'));
-		});
+		}	
 
 		function loadMyRooms() {
 			$.ajax({
 			    url: rooms_url,
 			    type: 'get',
-			    async: false,
+			    async: true,
 			    dataType: "json",
 			    success: function(data) {
 			    	users_and_rooms.rooms = data;
@@ -132,7 +127,7 @@
 			$.ajax({
 			    url: users_url,
 			    type: 'get',
-			    async: false,
+			    async: true,
 			    dataType: "json",
 			    success: function(data) {
 			    	users_and_rooms.users = data;
