@@ -44,7 +44,7 @@
                                 <ul class="users">
                                 	<li class="person" v-for="user in users" data-chat="person1">
                                 		<div class="user">
-                                			<img :src="user.avatar" alt="{{ user.name }}">
+                                			<img :src="user.avatar" :alt="user.name">
                                 			<span class="status" v-bind:class="[user.status]"></span>
                                 		</div>
                                 		<p class="name-time">
