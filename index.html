@@ -36,10 +36,10 @@
 
                     <!-- Row start -->
                     <div class="row no-gutters">
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3" id="list-of-users">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3" id="users-and-rooms">
                             <div class="users-container">
                                 <div class="chat-search-box">
-                                   <h4>Dostupné chaty ({{ users.length }})</h4>
+                                   <h4>Členové ({{ users.length }})</h4>
                                 </div>
                                 <ul class="users">
                                 	<li class="person" v-for="user in users" :data-chat="user.id">
@@ -52,7 +52,21 @@
                                         </p>
                                 	</li>
                                 </ul>
+                                <div class="chat-search-box">
+                                   <h4>Skupinové konverzace ({{ rooms.length }})</h4>
+                                </div>
+                                <ul class="users">
+                                	<li class="person" v-for="room in rooms" :data-chat="room.id">
+                                		<div class="user">
+                                			<img v-for="image in getAllAvatars(room)" :src="image.avatar" :alt="image.name">
+                                		</div>
+                                		<p class="name-time">
+                                            <span class="name">{{ room.name }}</span>
+                                        </p>
+                                	</li>
+                                </ul>
                             </div>
+
                         </div>
                         <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9" id="thread-panel">
                             <div class="selected-user">
