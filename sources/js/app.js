@@ -2,8 +2,50 @@
 		
 		var listOfUsers = listOfRooms = [];
 		var users_url = 'https://private-d70ba-pwachat.apiary-mock.com/v1/users';
+		var id = 7;
 
 		var rooms_url = 'https://private-d70ba-pwachat.apiary-mock.com/v1/rooms';
+
+		var avatars =  new Vue({
+			el: '.avatars-box',
+			data: {
+				avatars: [	
+					{
+						"id": 1,
+						"path":"sources/images/avatars/avatar1.png"
+					},	
+					{
+						"id": 2,
+						"path": "sources/images/avatars/avatar2.png"
+					},	
+					{
+						"id": 3,
+						"path": "sources/images/avatars/avatar3.png"
+					},	
+					{
+						"id": 4,
+						"path": "sources/images/avatars/avatar4.png"
+					},	
+					{
+						"id": 5,
+						"path": "sources/images/avatars/avatar5.png"
+					},	
+					{
+						"id": 6,
+						"path": "sources/images/avatars/avatar6.png"
+					},	
+					{
+						"id": 7,
+						"path": "sources/images/avatars/avatar7.png"
+					}
+				]
+			},
+			methods: {
+				hasActiveClass(avatar_id) {
+					return avatar_id == id ? "active" : "none";
+				}
+			}
+		});
 		
 		
 
@@ -23,6 +65,9 @@
         				});
     				});
     				return avatars;
+				},
+				loadThread(user_id) {
+					loadThread(user_id);
 				}
 			}
 		});
@@ -56,15 +101,36 @@
 			}
 		});
 
-
-		$(document).on('click','.person',function () {
-                console.log('person.clicked');
-			loadThread($(this).attr('data-chat'));
-        });
+		$(".message").keypress(function(event) {
+			if(event.which == 13) {
+				console.log($(this).val());
+				$(this).val('');
+				$(this).putCursorAtStart();
+			}
+		});
 
 		function loadThread(to) {
-			console.log("X");
 			var thread = [
+				{
+					"user": {
+						"id": 1,
+	                	"name": "Martin Tejkl",
+	                	"avatar": "https://www.bootdey.com/img/Content/avatar/avatar3.png",
+	                	"status": "online"
+					},
+					"message": "<p>Hello bro, how are you?<br>Can we discuss our semestral project?</p>",
+					"created_at": "2014-03-12T13:37:27+00:00"
+				},
+				{
+					"user": {
+		                "id": 2,
+		                "name": "Pepa Reckziegel",
+		                "avatar": "https://www.bootdey.com/img/Content/avatar/avatar2.png",
+		                "status": "busy"
+	            	},
+					"message": "<p>No<br>I'm little busy.</p>",
+					"created_at": "2014-03-12T13:37:27+00:00"
+				},
 				{
 					"user": {
 						"id": 1,

@@ -42,7 +42,7 @@
                                    <h4>Členové ({{ users.length }})</h4>
                                 </div>
                                 <ul class="users">
-                                	<li class="person" v-for="user in users" :data-chat="user.id">
+                                	<li class="person" v-for="user in users" :data-chat="user.id" v-on:click="loadThread(user.id)">
                                 		<div class="user">
                                 			<img :src="user.avatar" :alt="user.name">
                                 			<span class="status" v-bind:class="[user.status]"></span>
@@ -84,12 +84,26 @@
                                 	</li>
                                 </ul>
                                 <div class="form-group mt-3 mb-0">
-                                    <textarea class="form-control" rows="3" placeholder="Type your message here..."></textarea>
+                                    <textarea class="form-control message" rows="3" placeholder="Type your message here..."></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <!-- Row end -->
+
+                    <div class="row no-gutters avatars-box">
+                        <img v-for="avatar in avatars" :src="avatar.path" :alt="avatar.id" v-bind:class="hasActiveClass(avatar.id)">
+                       
+                        <select class="selectpicker" name="" id="">
+                            <option value="online">online</option>
+                            <option value="offline">offline</option>
+                            <option value="away">away</option>
+                            <option value="busy">busy</option>
+                        </select>
+                        <input type="text">
+                        <button class="btn-primary">Změnit</button>
+                    </div>
+                    
                 </div>
 
             </div>
