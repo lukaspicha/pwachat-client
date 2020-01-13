@@ -382,12 +382,13 @@ ul {
 .chat-box {
     height: 300px;
     overflow-y: scroll;
+    overflow:auto;
 }
-.avatars-box {
+.user-panel {
     padding: 30px;
     border-top: 1px solid rgb(230, 236, 243);
 }
-.avatars-box img{
+.user-panel img{
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -396,10 +397,10 @@ ul {
     transition: .3s all;
 }
 
-.avatars-box img.active {
+.user-panel img.active {
    opacity: 1;
 }
 
-.avatars-box img:hover {
+.user-panel img:hover {
     opacity: 1;
 }
