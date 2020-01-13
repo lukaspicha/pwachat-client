@@ -57,6 +57,7 @@
 					message: null,
 					oposite_name: null,
 					avatar: null,
+					test_logins: [],
 				}
 			},
 
@@ -254,9 +255,29 @@
 						.catch(error => {
 							console.log(error)
 						});
+				},
+				prepareTestLogins() {
+					axios
+						.get('http://localhost:3000/v1/users/')
+						.then(response => {
+							listOfUsers = [];
+							response.data.forEach((user) => {
+								listOfUsers.push({
+									name: user.name,
+									login: user._id,
+									password: "ec1141",
+								});
+								
+							});
+							this.test_logins = listOfUsers;
+						})
+						.catch(error => {
+							console.log(error)
+						})
 				}
 			},
 			created: function() {
+				this.prepareTestLogins();
 				this.recoveryFromStorage();
 				this.loadAvatars();
 				this.loadStates();

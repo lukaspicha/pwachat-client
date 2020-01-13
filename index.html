@@ -104,6 +104,16 @@
                         <input type="text" name="id" v-model="id" class="form-control">
                         <input type="password" name="password" v-model="password" class="form-control">
                         <button type="button" class="btn btn-primary" name="login" v-on:click="login()">Přihlásit se</button>
+                        <h6>Dostupné loginy pro testování</h6>
+                        <ol>
+                            <li v-for="login in test_logins">
+                                <code>
+                                    {{login.name}} <br>
+                                    login: {{login.login}}<br>
+                                    password: {{login.password}}
+                                </code>
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </div>
