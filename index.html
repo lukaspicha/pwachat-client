@@ -10,9 +10,9 @@
 
 </head>
 <body>
-    <div id="loading" >loading...</div>
+<div id="loading" >loading...</div>
+
 <div class="container" id="main-container">
-    <!-- Page header start -->
     <div class="page-title">
         <div class="row gutters">
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
@@ -22,117 +22,93 @@
             </div>
         </div>
     </div>
-    
-  
-    <!-- Page header end -->
-
-    <!-- Content wrapper start -->
-    <div class="content-wrapper">
-
-        <!-- Row start -->
+    <div class="content-wrapper app">
         <div class="row gutters">
-
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-
                 <div class="card m-0">
-                    <div class="user-container">
-                        <div v-if="logged">
-                            <div class="row no-gutters user-panel">
-                                <img v-for="avatar in avatars" :src="avatar.path" :alt="avatar._id" v-bind:class="hasActiveClass(avatar._id)" :data-avatar-id="avatar._id" v-on:click="changeUserAvatar(avatar._id)">
-                                <select name="user-status" v-model="state" v-on:change="changeUserState()">
-                                    <option v-for="state in states" v-bind:value="state.code">{{ state.text }}</option>
-                                </select>
-                                <input type="text" v-model="userName">
-                                <button class="btn-primary" v-on:click="changeUserName()">Změnit</button>
-                                <br>
-                                <button type="button" class="btn btn-primary" name="logout" v-on:click="logout()">Odhlásit se</button>
-                            </div>
+                    <div v-if="logged && user">
+                        <div class="row no-gutters user-panel">
+                            <img v-for="avatar in avatars" :src="avatar.path" alt="no-photo" v-bind:class="hasActiveClass(avatar._id)" :data-avatar-id="avatar._id" v-on:click="changeUserAvatar(avatar._id)">
+                            <select name="user-status" v-model="user.status" v-on:change="changeUserState()">
+                                <option v-for="state in states" v-bind:value="state.code">{{ state.text }}</option>
+                            </select>
+                            <input type="text" v-model="user.name">
+                            <button class="btn-primary" v-on:click="changeUserName()">Změnit</button>
+                            <br>
+                            <button type="button" class="btn btn-primary" name="logout" v-on:click="logout()">Odhlásit se</button>
                         </div>
-                        <div v-else>
-                            <input type="text" name="id" v-model="id" class="form-control">
-                            <input type="password" name="password" v-model="password" class="form-control">
-                            <button type="button" class="btn btn-primary" name="login" v-on:click="login()">Přihlásit se</button>
-                        </div>
-                    </div>
-                    <!-- Row start -->
-                    <div class="row no-gutters" id="users-and-rooms">
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
-                            <div class="users-container">
-                                <div class="chat-search-box">
-                                   <h4>Členové ({{ users.length }})</h4>
-                                </div>
-                                <ul class="users">
-                                	<li class="person" v-for="user in users" :data-chat="user._id" v-on:click="loadMessages(user)">
-                                		<div class="user">
-                                			<img :src="user.avatar.path" :alt="user.name">
+                        <div class="row no-gutters" id="users-and-rooms">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
+                                <div class="users-container">
+                                    <div class="chat-search-box">
+                                       <h4>Členové ({{ users.length }})</h4>
+                                    </div>
+                                    <ul class="users">
+                                        <li class="person" v-for="user in users" :data-chat="user._id" v-on:click="loadMessages(user)">
+                                            <div class="user">
+                                                <img :src="user.avatar.path" :alt="user.name">
 
-                                			<span class="status" v-bind:class="user.status"></span>
-                                		</div>
-                                		<p class="name-time">
-                                            <span class="name">{{ user.name }}</span>
-                                        </p>
-                                	</li>
-                                </ul>
-                                <div class="chat-search-box">
-                                   <h4>Skupinové konverzace ({{ rooms.length }}) </h4>
+                                                <span class="status" v-bind:class="user.status"></span>
+                                            </div>
+                                            <p class="name-time">
+                                                <span class="name">{{ user.name }}</span>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <div class="chat-search-box">
+                                       <h4>Skupinové konverzace ({{ rooms.length }}) </h4>
+                                    </div>
+                                    <ul class="users">
+                                        <li class="person" v-for="room in rooms" :data-chat="room.id">
+                                            <div class="user">
+                                                <img v-for="(avatar_id, index) in getRoomAvatars(room)" :src="getAvatarSrc(index)" alt="dsmd">
+                                            </div>
+                                            <p class="name-time">
+                                                <span class="name">{{ room._id }}</span>
+                                            </p>
+                                        </li>
+                                        <li class="person">
+                                            <p class="name-time" v-on:click="createRoom()">
+                                                <span class="name"> <i class="fa fa-plus"></i> Založit novou skupinu</span>
+                                            </p>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <ul class="users">
-                                	<li class="person" v-for="room in rooms" :data-chat="room.id">
-                                		<div class="user">
-                                            <img v-for="(avatar_id, index) in getRoomAvatars(room)" :src="getAvatarSrc(index)" alt="dsmd">
-                                		</div>
-                                		<p class="name-time">
-                                            <span class="name">{{ room._id }}</span>
-                                        </p>
-                                	</li>
-
-                                    <li class="person">
-                                        <p class="name-time" v-on:click="createRoom()">
-                                            <span class="name"> <i class="fa fa-plus"></i> Založit novou skupinu</span>
-                                        </p>
-                                    </li>
-                                </ul>
                             </div>
-
-                        </div>
-                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9" id="thread-panel">
-                            <div class="selected-user">
-                                <span>To: <span class="name">{{ oposite_name }}</span></span>
-                            </div>
-                            <div class="chat-container">
-                                <ul class="chat-box chatContainerScroll">
-                                	<li v-for="message in conversation" v-bind:class="chatSide(message.sender._id)">
-                                		<div class="chat-avatar">
-                                            <img :src="message.sender.avatar.path" :alt="message.sender.name">
-                                            <div class="chat-name">{{ message.sender.name }}</div>
-                                        </div>
-                                        <div class="chat-text" v-html="message.text"></div>
-                                        <div class="chat-hour">{{ convertDate(message.created) }} <span class="fa fa-check-circle"></span></div>
-                                	</li>
-                                </ul>
-                                <div class="form-group mt-3 mb-0">
-                                    <textarea class="form-control message" rows="3" placeholder="Zpráva..." v-model="message"></textarea>
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9" id="thread-panel">
+                                <div class="selected-user">
+                                    <span>To: <span class="name">{{ oposite_name }}</span></span>
                                 </div>
-                                <div class="form-group mt-3 mb-0">
-                                    <button class="brn btn-success" v-on:click="sendMessage">Odeslat</button>
+                                <div class="chat-container">
+                                    <ul class="chat-box chatContainerScroll">
+                                        <li v-for="message in conversation" v-bind:class="chatSide(message.sender._id)">
+                                            <div class="chat-avatar">
+                                                <img :src="message.sender.avatar.path" :alt="message.sender.name">
+                                                <div class="chat-name">{{ message.sender.name }}</div>
+                                            </div>
+                                            <div class="chat-text" v-html="message.text"></div>
+                                            <div class="chat-hour">{{ convertDate(message.created) }} <span class="fa fa-check-circle"></span></div>
+                                        </li>
+                                    </ul>
+                                    <div class="form-group mt-3 mb-0">
+                                        <textarea class="form-control message" rows="3" placeholder="Zpráva..." v-model="message"></textarea>
+                                    </div>
+                                    <div class="form-group mt-3 mb-0">
+                                        <button class="brn btn-success" v-on:click="sendMessage">Odeslat</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Row end -->
-
-                    
-                    
+                    <div v-else>
+                        <input type="text" name="id" v-model="id" class="form-control">
+                        <input type="password" name="password" v-model="password" class="form-control">
+                        <button type="button" class="btn btn-primary" name="login" v-on:click="login()">Přihlásit se</button>
+                    </div>
                 </div>
-
             </div>
-
         </div>
-        <!-- Row end -->
-
     </div>
-    <!-- Content wrapper end -->
-
 </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
