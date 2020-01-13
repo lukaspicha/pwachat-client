@@ -32,7 +32,7 @@
   					users_and_rooms.getMessagesByWebSocket(received_data.data.sender);
   					break;
   				case '#UPDATE-AVATARS':
-  					user_panel.loadAvatars();
+  					user_container.loadAvatars();
 				default:
 					console.log('Invalid protokol id');
 					break;
@@ -43,47 +43,7 @@
 
 
 
-		var login_form = new Vue({
-			el: '#login-form',
-			data () {
-				return {
-					id: "",
-					password: "",
-					x: "Ahojky",
-					logged: null
-				}
-			},
-			methods: {
-				login: async function (event) {
-					try {
-						const response = await axios.post('http://localhost:3000/v1/auth/login/', {id: this.id, password: this.password});
-						if(response.status == 200) {
-							this.logged = true;
-						} else {
-
-						}
-					} catch(err) {
-						console.log(err);
-					}
-				},
-				logout: async function(event) {
-					try {
-						const response = await axios.post('http://localhost:3000/v1/auth/logout', {id: this.id});
-						if(response.status == 200) {
-
-						} else {
-
-						}
-					} catch(err) {
-						console.log(err);
-					}
-				}
-			},
-			created: function() {
-
-			},
-		});
-
+		
 
 		var loading = new Vue({
 			el: '#loading',
@@ -130,10 +90,13 @@
 
 
 		
-		var user_panel = new Vue({
-			el: '.user-panel',
+		var user_container = new Vue({
+			el: '.user-container',
 			data () {
 				return {
+					id: "",
+					password: "",
+					logged: false,
 					avatars: [],
 					states: [],
 					userName: JSON.parse(localStorage.getItem('user')).name,
@@ -143,8 +106,32 @@
 				}
 			},
 			methods: {
+				login: async function (event) {
+					try {
+						const response = await axios.post('http://localhost:3000/v1/auth/login/', {id: this.id, password: this.password});
+						if(response.status == 200) {
+							this.logged = true;
+						} else {
+
+						}
+					} catch(err) {
+						console.log(err);
+					}
+				},
+				logout: async function(event) {
+					try {
+						const response = await axios.put('http://localhost:3000/v1/auth/logout', {id: this.id});
+						console.log(response);
+						if(response.status == 200) {
+							this.logged = false;
+						} else {
+
+						}
+					} catch(err) {
+						console.log(err);
+					}
+				},
 				loadAvatars() {
-					console.log(login_form.x);
 					axios
 						.get('http://localhost:3000/v1/avatars/')
 						.then(response => {

@@ -23,16 +23,7 @@
         </div>
     </div>
     
-    <div id="login-form">
-        <div v-if="logged">
-            <button type="button" class="btn btn-primary" name="logout" v-on:click="logout()">Odhlásit se</button>
-        </div>
-        <div v-else>
-            <input type="text" name="id" v-model="id" class="form-control">
-            <input type="password" name="password" v-model="password" class="form-control">
-            <button type="button" class="btn btn-primary" name="login" v-on:click="login()">Přihlásit se</button>
-        </div>
-    </div>
+  
     <!-- Page header end -->
 
     <!-- Content wrapper start -->
@@ -44,13 +35,24 @@
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
                 <div class="card m-0">
-                    <div class="row no-gutters user-panel">
-                        <img v-for="avatar in avatars" :src="avatar.path" :alt="avatar._id" v-bind:class="hasActiveClass(avatar._id)" :data-avatar-id="avatar._id" v-on:click="changeUserAvatar(avatar._id)">
-                        <select name="user-status" v-model="state" v-on:change="changeUserState()">
-                            <option v-for="state in states" v-bind:value="state.code">{{ state.text }}</option>
-                        </select>
-                        <input type="text" v-model="userName">
-                        <button class="btn-primary" v-on:click="changeUserName()">Změnit</button>
+                    <div class="user-container">
+                        <div v-if="logged">
+                            <div class="row no-gutters user-panel">
+                                <img v-for="avatar in avatars" :src="avatar.path" :alt="avatar._id" v-bind:class="hasActiveClass(avatar._id)" :data-avatar-id="avatar._id" v-on:click="changeUserAvatar(avatar._id)">
+                                <select name="user-status" v-model="state" v-on:change="changeUserState()">
+                                    <option v-for="state in states" v-bind:value="state.code">{{ state.text }}</option>
+                                </select>
+                                <input type="text" v-model="userName">
+                                <button class="btn-primary" v-on:click="changeUserName()">Změnit</button>
+                                <br>
+                                <button type="button" class="btn btn-primary" name="logout" v-on:click="logout()">Odhlásit se</button>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <input type="text" name="id" v-model="id" class="form-control">
+                            <input type="password" name="password" v-model="password" class="form-control">
+                            <button type="button" class="btn btn-primary" name="login" v-on:click="login()">Přihlásit se</button>
+                        </div>
                     </div>
                     <!-- Row start -->
                     <div class="row no-gutters" id="users-and-rooms">
@@ -134,7 +136,6 @@
 </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="sources/js/helpers.js"></script>
     <script src="sources/js/app.js"></script>	
 </body>
 </html>
