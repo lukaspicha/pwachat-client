@@ -1,13 +1,5 @@
-	
-		
-			
-		var users_url = 'https://private-d70ba-pwachat.apiary-mock.com/v1/users';
-		var id = 1;
-		var message = "";
 
-		var rooms_url = 'https://private-d70ba-pwachat.apiary-mock.com/v1/rooms';
 		
-	
 		const connection = new WebSocket('ws://localhost:19957');
 
 
@@ -58,22 +50,25 @@
 					oposite_name: null,
 					avatar: null,
 					test_logins: [],
+					new_messages: [],
 				}
 			},
 
 			methods: {
+
 				recoveryFromStorage: function() {
 					u = JSON.parse(localStorage.getItem('user'));
 					if(u) {
             			this.user = u;
             			this.logged = true;
-            			console.log('mame');
+            			console.log('obnoveno ze storage');
             		} else {
             			this.user = null;
             			this.logged = false;
-            			console.log('nic nemame');
+            			console.log('ve storage nic neni');
             		}
 				},
+
 				login: async function (event) {
 					try {
 						const response = await axios.post('http://localhost:3000/v1/auth/login/', {id: this.id, password: this.password});
@@ -88,12 +83,15 @@
 						console.log(err);
 					}
 				},
+
 				logout: async function(event) {
 					try {
 						const response = await axios.put('http://localhost:3000/v1/auth/logout', {id: this.id});
 						console.log(response);
 						if(response.status == 200) {
 							this.logged = false;
+							this.user = null;
+							localStorage.removeItem('user');
 						} else {
 
 						}
@@ -101,6 +99,7 @@
 						console.log(err);
 					}
 				},
+
 				loadAvatars() {
 					axios
 						.get('http://localhost:3000/v1/avatars/')
@@ -111,6 +110,7 @@
 							console.log(error)
 						})
 				},
+
 				loadStates() {
 					axios
 						.get('http://localhost:3000/v1/states/')
@@ -121,7 +121,9 @@
 							console.log(error)
 						})
 				},
+
 				loadUsers: function () {
+					console.log('xx');
 					axios
 						.get('http://localhost:3000/v1/users/')
 						.then(response => {
@@ -129,6 +131,7 @@
 							response.data.forEach((user) => {
 								//nechceme vykreslit sebe
 								if(user._id != this.user._id) {
+									user.unreaded = 0;
 									listOfUsers.push(user);
 								}
 							});
@@ -138,35 +141,43 @@
 							console.log(error)
 						})
  	 			},
+
 				hasActiveClass(avatar_id) {
 					return avatar_id == this.user.avatar._id ? "active" : "none";
 				},
+
 				changeUserAvatar(avatar_id) {
 					this.updateUser({
 						avatar: avatar_id
 					});
-					this.avatar = avatar_id;
 				},
+
 				changeUserState() {
 					this.updateUser({
-						status: this.state
+						status: this.user.status
 					});
 				},
+
 				changeUserName() {
 					this.updateUser({
-						name: this.userName
+						name: this.user.name
 					});
 				},
-				updateUser(data) {
+
+				updateUser: function(data) {
+					console.log(data);
 					axios
-						.put('http://localhost:3000/v1/users/' + this.userId, data)
-	    				.then(function (response) {
-	    					connectedUser = response.data;
-	    				})
-    					.catch(function (error) {
-							console.log(error);
+ 						.put('http://localhost:3000/v1/users/' + this.user._id, data)
+						.then(response => {
+							console.log(response.data, 'mame update');
+							this.user = response.data;
+							localStorage.setItem('user', JSON.stringify(response.data));
+						})
+						.catch(error => {
+							console.log(error)
 						})
 				},
+
 				loadRooms: function () {
  					axios
  						.get('http://localhost:3000/v1/rooms/')
@@ -177,24 +188,35 @@
 							console.log(error)
 						})
  				},
+
 				loadMessages(receiver) {
-					console.log('doo');
-					console.log('http://localhost:3000/v1/messages/' + this.user._id + '/' + receiver._id);
+					
+					this.receiver = receiver;	
+					this.oposite_name = receiver.name;
+
+					this.users.forEach((user) => {
+						if(user._id == receiver._id) {
+							user.unreaded = 0;
+							return;
+						}
+					});
+
 					axios
  						.get('http://localhost:3000/v1/messages/' + this.user._id + '/' + receiver._id)
 						.then(response => {
+							console.log(response.data);
 							this.conversation = response.data;
 						})
 						.catch(error => {
 							console.log(error)
 						});
 
-					this.receiver = receiver;	
-					this.oposite_name = receiver.name;	
 				},
+
 				getAvatarSrc(avatar_id) {
 					return "sources/images/avatars/avatar" + avatar_id + '.png';
 				},
+
 				createRoom() {
 					axios
  						.post('http://localhost:3000/v1/rooms/create/' + this.user._id)
@@ -205,9 +227,11 @@
 							console.log(error)
 						})
 				},
+
 				chatSide(userId) {
 					return userId == this.user._id ? "chat-left" : "chat-right";
 				},
+
 				convertDate(date) {
 					d = new Date(date);
 					return d.toLocaleString();
@@ -216,46 +240,46 @@
 				sendMessage() {
 					const data = {
 						receiver_id: this.receiver._id,
+						sender_id: this.user._id,
 						text: this.message
 					};
-
-
-					console.log('odesilam: ', data);
-
 					axios
-	    				.post('http://localhost:3000/v1/messages/' + this.user._id, data)
+	    				.post('http://localhost:3000/v1/messages/', data)
 	    				.then(function (response) {	
-	    					console.log('odeslano');
-
-	    					if (connection.isOpen()) {
-	    						console.log('otevreno');
-								connection.send(data.message);
-	    					} else {
-	    						console.log('zavreno');
-	    					}
 						})
 						.catch(function (error) {
-							console.log(error);
 						});
-
-					this.conversation.push();
-
-
 				},
+
 				getMessagesByWebSocket(sender_id) {
 					console.log('from socket: ' + sender_id);
 					console.log('ME socket: ' + this.user._id);
 					axios
  						.get('http://localhost:3000/v1/messages/' + sender_id + '/' + this.user._id)
 						.then(response => {
+							this.users.forEach((user) => {
+								if(user._id == sender_id) {
+									if(this.receiver) {
+										if(user._id == this.receiver._id) {
+											user.unreaded = 0;
+										} else {
+											user.unreaded++;
+										}	
+									} else {
+										user.unreaded++;
+									}
+								}
+							});
 
-							this.conversation = response.data;
-							console.log(response.data);
+							if(this.receiver._id == sender_id) {
+								this.conversation = response.data;
+							}
 						})
 						.catch(error => {
 							console.log(error)
 						});
 				},
+
 				prepareTestLogins() {
 					axios
 						.get('http://localhost:3000/v1/users/')

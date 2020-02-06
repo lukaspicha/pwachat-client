@@ -10,8 +10,6 @@
 
 </head>
 <body>
-<div id="loading" >loading...</div>
-
 <div class="container" id="main-container">
     <div class="page-title">
         <div class="row gutters">
@@ -44,24 +42,26 @@
                                        <h4>Členové ({{ users.length }})</h4>
                                     </div>
                                     <ul class="users">
-                                        <li class="person" v-for="user in users" :data-chat="user._id" v-on:click="loadMessages(user)">
+                                        <li class="person" v-for="(user, index) in users"  :key="index" data-chat="user._id" v-on:click="loadMessages(user)">
                                             <div class="user">
                                                 <img :src="user.avatar.path" :alt="user.name">
 
                                                 <span class="status" v-bind:class="user.status"></span>
                                             </div>
                                             <p class="name-time">
-                                                <span class="name">{{ user.name }}</span>
+                                                <span class="name">{{ user.name }}</span> 
+                                                <span v-if="user.unreaded > 0">
+                                                    ({{ user.unreaded }})
+                                                </span>
                                             </p>
                                         </li>
                                     </ul>
-                                    <div class="chat-search-box">
+                                    <div class="chat-search-box" style="display:none;">
                                        <h4>Skupinové konverzace ({{ rooms.length }}) </h4>
                                     </div>
-                                    <ul class="users">
+                                    <ul class="users" style="display: none;">
                                         <li class="person" v-for="room in rooms" :data-chat="room.id">
                                             <div class="user">
-                                                <img v-for="(avatar_id, index) in getRoomAvatars(room)" :src="getAvatarSrc(index)" alt="dsmd">
                                             </div>
                                             <p class="name-time">
                                                 <span class="name">{{ room._id }}</span>
@@ -76,10 +76,13 @@
                                 </div>
                             </div>
                             <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9" id="thread-panel">
-                                <div class="selected-user">
+
+                                <div v-if="receiver" class="selected-user">
                                     <span>To: <span class="name">{{ oposite_name }}</span></span>
                                 </div>
-                                <div class="chat-container">
+
+                                <div v-if="receiver" class="chat-container">
+                                   
                                     <ul class="chat-box chatContainerScroll">
                                         <li v-for="message in conversation" v-bind:class="chatSide(message.sender._id)">
                                             <div class="chat-avatar">
@@ -96,6 +99,8 @@
                                     <div class="form-group mt-3 mb-0">
                                         <button class="brn btn-success" v-on:click="sendMessage">Odeslat</button>
                                     </div>
+                                </div>
+                                <div v-else>
                                 </div>
                             </div>
                         </div>
